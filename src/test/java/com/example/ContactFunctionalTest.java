@@ -7,12 +7,11 @@ import org.mule.api.client.LocalMuleClient;
 import org.mule.tck.junit4.FunctionalTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -33,15 +32,18 @@ public class ContactFunctionalTest extends FunctionalTestCase {
   @Test
   public void shouldUpsertRoomTypeToSalesForce() throws Exception {
     LocalMuleClient client = muleContext.getClient();
+    List<Map<String, Object>> records = new ArrayList<Map<String, Object>>();
+
     Map<String, Object> record = new HashMap<String, Object>();
+    record.put("FirstName", "Bugs");
+    record.put("LastName", "Bunny");
+    records.add(record);
 
-    record.put("PropertyId", "not sure right now");
-    record.put("SiteId", "a1Pi0000000Eza4");
-    client.dispatch("inboundMessage", record, null);
+    client.dispatch("inboundMessages", records, null);
 
-    MuleMessage message = client.request("reservationUpsert", 10000);
-    assertNotNull("No reservationUpsert message received for request", message);
+    MuleMessage message = client.request("messageDone", 10000);
+    assertNotNull("No message received.", message);
     Map<String,Object> payload = (Map<String, Object>) message.getPayload();
-    assertNotNull(payload.get("RoomTypeId"));
+    assertNotNull(payload.get("<not sure right now>"));
   }
 }

@@ -12,19 +12,20 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
     <notification event="ENDPOINT-MESSAGE"/>
   </notifications>
 
-  <!--<sfdc:config name="sfdc" username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.token}" url="${sfdc.url}"/>-->
-  <sfdc:config name="sfdc" username="${sfdc.username}" password="${sfdc.password}"/>
+  <sfdc:config name="sfdc" username="" password="" securityToken=""/>
 
   <vm:endpoint name="inboundMessages" path="in.bound.messages"/>
+  <vm:endpoint name="messageDone" path="message.complete"/>
 
   <flow name="upsert-contact-without-id">
 
     <inbound-endpoint ref="inboundMessages"/>
 
-    <sfdc:upsert config-ref="sfdc" type="Contact">
+    <sfdc:upsert config-ref="sfdc" type="Contact" externalIdFieldName="asdf">
       <sfdc:objects ref="#[payload]"/>
     </sfdc:upsert>
 
+    <outbound-endpoint ref="messageDone"/>
   </flow>
 
 </mule>
