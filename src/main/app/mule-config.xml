@@ -1,0 +1,30 @@
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+      xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+">
+
+  <notifications dynamic="true">
+    <notification event="ENDPOINT-MESSAGE"/>
+  </notifications>
+
+  <!--<sfdc:config name="sfdc" username="${sfdc.username}" password="${sfdc.password}" securityToken="${sfdc.token}" url="${sfdc.url}"/>-->
+  <sfdc:config name="sfdc" username="${sfdc.username}" password="${sfdc.password}"/>
+
+  <vm:endpoint name="inboundMessages" path="in.bound.messages"/>
+
+  <flow name="upsert-contact-without-id">
+
+    <inbound-endpoint ref="inboundMessages"/>
+
+    <sfdc:upsert config-ref="sfdc" type="Contact">
+      <sfdc:objects ref="#[payload]"/>
+    </sfdc:upsert>
+
+  </flow>
+
+</mule>
